@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>Bootstrap 101 Template</title>
+
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css" />
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	</head>
+	<style>
+		body {
+			padding-top: 70px;
+		}
+	</style>
+	<body>	
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.html">图书查询</a></li>
+            <li><a href="test2.html">队列查询</a></li>
+            <li><a href="test2.html">移动架体</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+		<div class="container" id="app">
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="basic" class="col-sm-2 control-label">区:</label>
+					<div class="col-sm-2">
+						<input v-model="bit" type="number" class="form-control">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="basic" class="col-sm-2 control-label">列:</label>
+					<div class="col-sm-2">
+						<input v-model="list" type="number" class="form-control">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="basic" class="col-sm-2 control-label">面:</label>
+					<div class="col-sm-2">
+						<select v-model="selected" class="selectpicker show-tick form-control">
+				          <option v-for="option in options" v-bind:value="option.value">{{option.text}}</option>
+				        </select>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="basic" class="col-sm-2 control-label">节:</label>
+					<div class="col-sm-2">
+						<input v-model="joint" type="number" class="form-control">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="basic" class="col-sm-2 control-label">层:</label>
+					<div class="col-sm-2">
+						<input v-model="tier" type="number" class="form-control">
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="basic" class="col-sm-2 control-label">控制方式:</label>
+					<div class="col-sm-2">
+						<select v-model="selected" class="selectpicker show-tick form-control">
+				          <option v-for="way in ways" v-bind:value="option.value">{{way.text}}</option>
+				        </select>
+					</div>
+				</div>
+			</form>
+			<div class="col-sm-offset-2 col-sm-10">
+				<button class="btn btn-default" v-on:click="control();">查询</button>
+			</div>
+			<hr>
+			<table id="jsonpTb" class="table table-hover">
+			</table>
+		</div>
+		<!-- /.container -->
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="js/jquery.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-select.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">	
+			new Vue({
+				el:'#app',
+				data:{
+					selected:'1',
+					options:[
+						{text:'A',value:'1'},
+						{text:'B',value:'2'},
+					],
+					bit:'',
+					list:'',
+					joint:'',
+					tier:'',
+					todos: [],
+					selected:'stopRow',
+					ways:[
+						{text:'开架',value:'openRow'},
+						{text:'停止',value:'stopRow'},
+						{text:'左移',value:'leftMoveRow'},
+						{text:'右移',value:'rightMoveRow'},
+						{text:'通风',value:'ventRow'},
+						{text:'合架',value:'closeRow'}
+					],
+				},
+				methods: {
+				    control: function(shelf_no, title) {
+						$.ajax({
+							type: "post",
+							cache: false,
+							url: "http://192.168.0.2/mobile_web/ajax_server/MobileHandle.ashx?jsoncallback=?&action=ControlCabinet",
+							dataType: "jsonp",
+							data: {
+								"cmd": cmd,
+								"cabinetNos": cabinetNos,  
+								"notes": "我的测试文档"
+							},
+							success: function(json) {
+								alert(json.result);
+							},
+							error: OnError
+						});
+					},
+				}
+			});
+			function OnError(XMLHttpRequest, textStatus, errorThrown) {
+				if (errorThrown || textStatus == "error" || textStatus == "parsererror" || textStatus == "notmodified") {
+					console.log("请求数据时发生错误！");
+					return;
+				}
+				if (textStatus == "timeout") {
+					console.log("请求数据超时！");
+					return;
+				}
+			};
+		</script>
+	</body>
+
+</html>

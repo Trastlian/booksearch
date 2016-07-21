@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+		<title>Bootstrap 101 Template</title>
+
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css" />
+
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	</head>
+	<style>
+		body {
+			padding-top: 70px;
+		}
+	</style>
+
+	<body>
+		
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="index.html">图书查询</a></li>
+            <li><a href="test2.html">队列查询</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+		<div class="container">
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="basic" class="col-sm-2 control-label">查询条件：</label>
+					<div class="col-sm-4">
+						<select id="basic" class="selectpicker show-tick form-control">
+				          <option value="maintitle">题名</option>
+				          <option value="author">作者</option>
+				          <option value="barcode">条码</option>
+				        </select>
+					</div>
+					<div class="col-sm-5">
+						<div class="input-group">
+							<input id="value_name" type="text" class="form-control" placeholder="Search for...">
+							<span class="input-group-btn">
+				        <button class="btn btn-default" type="button" onclick="ArchiveSearch();">查询</button>
+				      </span>
+						</div>
+						<!-- /input-group -->
+					</div>
+					<!-- /.col-lg-6 -->
+				</div>
+			</form>
+			<form class="form-horizontal">
+			  <div class="form-group">
+			    <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+			    <div class="col-sm-4">
+			      <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+			    </div>
+			    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+			    <div class="col-sm-4">
+			      <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+			    <div class="col-sm-10">
+			      <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <div class="col-sm-offset-2 col-sm-10">
+			      <div class="checkbox">
+			        <label>
+			          <input type="checkbox"> Remember me
+			        </label>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <div class="col-sm-offset-2 col-sm-10">
+			      <button type="submit" class="btn btn-default">Sign in</button>
+			    </div>
+			  </div>
+			</form>
+			
+			<hr>
+			<table id="jsonpTb" class="table table-hover">
+				<thead>
+	    	  		<tr>
+	                    <th>库房号</th>
+	                    <th>库房名称</th>
+	                    <th>库房IP地址</th>
+	                    <th>操作</th>
+	                </tr>
+	    	  	</thead>
+	    	  	<tbody>
+	    	  		<tr>
+	    	  			<td>$houseNo</td>
+	    	  			<td>$houseName</td>
+	    	  			<td>$ip</td>
+	    	  			<td>
+	    	  				<a href="room_edit.jsp?itype=1">增加</a>
+	       		  			<a href="room_edit.jsp?itype=2&houseNo=$houseNo">编辑</a>
+	       		  			<a href="#" onclick="javascript:roomsDelete('$houseNo');">删除</a>
+	    	  			</td>
+	    	  		</tr>
+	    	  	</tbody>
+			</table>
+		</div>
+		<!-- /.container -->
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="js/jquery.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-select.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function() {
+				
+			});
+			
+			//帐号验证及提示
+			function CkLoginId() {
+				var u_id = $("#u_idE").val();
+				var u_pwd = $("#u_pwdE").val();
+				
+				$.ajax({
+					type: "post",
+					cache: false,
+					url: "http://192.168.0.129/cp_wb/ajax_server/MobileHandle.ashx?jsoncallback=?",
+					dataType: "jsonp",
+					data: {
+						"u_id": u_id.val(),
+						"u_pwd": u_pwd.val()
+					},
+					success: OnSuccess,
+					error: OnError
+				});
+			}
+
+			function ArchiveSearch() {
+				var key_name = $("#basic").val();
+				var value_name = $("#value_name").val();
+				var dataText = {
+					"action" : "BookSearch",
+					"key_name": key_name,
+					"value_name": value_name
+				};
+				$.ajax({
+					type: "post",
+					cache: false,
+					url: "http://192.168.0.100/cp_wb/ajax_server/MobileServer.aspx?jsoncallback=?",
+					dataType: "jsonp",
+					data: dataText,
+					success: function(json) {
+						var array_json = json.data;
+						console.info(json.data);
+						$("#jsonpTb").empty();
+						var html = "<tr><th>作者</th><th>条码号</th><th>ISBN</th><th>题名</th><th>出版社</th><th>库房号</th><th>架位信息</th><th>状态</th><th>密集架控制</th></tr>";
+						$.each(array_json, function(index, value) {
+							var author = value.author,
+								barcode = value.barcode,
+								isbn = value.isbn,
+								maintitle = value.maintitle,
+								pub_addr = value.pub_addr,
+								house_no = value.house_no,
+								shelf_no = value.shelf_no,
+								status = value.status;
+								authorSub = author.length >=15?author.substring(0,15) + "...":author;
+							html += "<tr class='active'><td>" + authorSub + "</td><td>" + barcode + "</td>" + 
+									"<td>" + isbn + "</td><td>" + maintitle + "</td>" +
+									"<td>" + pub_addr + "</td><td>" + house_no + "</td>" +
+									"<td>" + shelf_no + "</td><td>" + status + "</td>" +
+									"<td><a href='#' onclick=\"OpenRow('" + shelf_no + "','" + maintitle + 
+									"');\">开架</a>&nbsp;&nbsp;&nbsp<a href='#' onclick=\"ShowRow('" + shelf_no + "','" + maintitle + "');\">显示</a></td></tr>";
+
+						});
+						$("#jsonpTb").html(html);
+					},
+					error: OnError
+				});
+			};
+			function OpenRow(shelf_no, title){
+				alert(shelf_no + "|" + title);
+			};
+			function ShowRow(shelf_no, title){
+				alert(shelf_no + "|" + title);
+				ControlCabinet();
+			};
+			function ControlCabinet() {
+				$.ajax({
+					type: "post",
+					cache: false,
+					url: "http://192.168.0.129/cp_wb/ajax_server/MobileHandle.ashx?jsoncallback=?&action=ControlCabinet",
+					dataType: "jsonp",
+					data: {
+						"cmd": "openRow",
+						"cabinetNos": "01020320304",
+						"notes": "我的测试文档"
+					},
+					success: function(json) {
+						alert(json.result);
+					},
+					error: OnError
+				});
+			};
+
+			function FindJobQueue() {
+
+				$.ajax({
+					type: "post",
+					cache: false,
+					url: "http://192.168.0.114/cp_wb/ajax_server/MobileHandle.ashx?jsoncallback=?&action=FindJobQueue",
+					dataType: "jsonp",
+					data: {
+						"job_type_no": "",
+						"begin_date": "",
+						"end_date": "",
+						"house_no": "",
+						"area_no": 0
+					},
+					success: function(json) {
+						var array_json = json.data;
+						console.info(json.data);
+						$("#jsonpTb").empty();
+						var html = "<tr><th>条码</th><th>题名</th></tr>";
+						$.each(array_json, function(index, value) {
+							var barcode = value.barcode;
+							var title = value["title"];
+							html += "<tr><td>" + barcode + "</td><td>" + title + "</td></tr>";
+						});
+						$("#jsonpTb").html(html);
+					},
+					error: OnError
+				});
+			};
+
+			function OnSuccess(json) {
+				alert(json.result);
+			};
+
+			function OnError(XMLHttpRequest, textStatus, errorThrown) {
+				targetDiv = $("#data");
+				if (errorThrown || textStatus == "error" || textStatus == "parsererror" || textStatus == "notmodified") {
+					targetDiv.replaceWith("请求数据时发生错误！");
+					return;
+				}
+				if (textStatus == "timeout") {
+					targetDiv.replaceWith("请求数据超时！");
+					return;
+				}
+			};
+		</script>
+	</body>
+
+</html>
